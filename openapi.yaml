@@ -1,0 +1,50 @@
+openapi: "3.1.0"
+info:
+  title: "Medieval API"
+  description: "Medieval API"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8080"
+paths:
+  /api/nsi/update-ffoms:
+    post:
+      summary: "Запрос на скачивание свежего федерального пакета НСИ с ресурса ФФОМС"
+      operationId: "updateFfomsNsi"
+      responses:
+        "200":
+          description: "OK - Нечего обновлять"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SingleMessageDto"
+        "201":
+          description: "OK - Скачали новую версию"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SingleMessageDto"
+  /api/nsi/update-rmz:
+    post:
+      summary: "Запрос на скачивание свежих версий НСИ с сайта РосМинЗдрав"
+      operationId: "updateRmzNsi"
+      responses:
+        "200":
+          description: "OK - Нечего обновлять"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SingleMessageDto"
+        "201":
+          description: "OK - Скачали новую версию"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/SingleMessageDto"
+components:
+  schemas:
+    SingleMessageDto:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+          nullable: true
