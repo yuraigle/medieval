@@ -2,6 +2,7 @@ package ru.irkoms.medieval.nsi;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.irkoms.medieval.domain.ex.AppException;
 
@@ -26,8 +27,10 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class RmzNsiUpdaterService {
 
-    private static final Path nsiDir = Paths.get(".", "nsi-files").toAbsolutePath();
     private final HttpClient httpClient;
+
+    @Value("${app.nsi_dir}")
+    private String nsiDir;
 
     public List<String> updateAll() throws AppException {
         final Map<String, String> oidMap = new HashMap<>();
@@ -49,13 +52,14 @@ public class RmzNsiUpdaterService {
 
     private String updateNsi(String id, String oid) throws AppException {
         try {
-            if (!nsiDir.toFile().exists()) {
-                Files.createDirectories(nsiDir);
+            Path nsiPath = Paths.get(nsiDir);
+            if (!nsiPath.toFile().exists()) {
+                Files.createDirectories(nsiPath);
             }
 
             String ver = getLatestVersion(oid);
             String fn = id + "-" + ver + ".zip";
-            Path nsiZip = Paths.get(nsiDir.toAbsolutePath().toString(), fn);
+            Path nsiZip = Paths.get(nsiPath.toAbsolutePath().toString(), fn);
 
             if (!nsiZip.toFile().exists()) {
                 downloadNsi(oid, ver, nsiZip.toFile());
